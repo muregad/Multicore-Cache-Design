@@ -21,9 +21,9 @@ class CPU:
             else:
                 print("Instruction -> Processor_" + str(self.bus.instruction_processor) + " writes " + "value:" + str(
                     self.bus.instruction_value) + " to address:" + str(self.bus.instruction_address))
-            for i in range(4):
-                print(self.processors[i].Cache.CacheState)
-            print("----------------------------------")
+            # for i in range(4):
+            #     print(self.processors[i].Cache.CacheState)
+            # print("----------------------------------")
 
         # print(" ")
         # for processor in range(len(self.bus.processors)):

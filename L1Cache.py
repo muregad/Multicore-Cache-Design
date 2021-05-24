@@ -12,6 +12,11 @@ class L1Cache:
         self.CacheState = [["I" for i in range(size // associativity)] for i in range(associativity)]
         self.BlockTag = [[None for i in range(size // associativity)] for i in range(associativity)]
 
+    def reset(self):
+        self.CachedData = [[None for i in range(self.size // self.associativity)] for i in range(self.associativity)]
+        self.CacheState = [["I" for i in range(self.size // self.associativity)] for i in range(self.associativity)]
+        self.BlockTag = [[None for i in range(self.size // self.associativity)] for i in range(self.associativity)]
+
     def read(self, ReadAddress):
         readMiss = True
         RdAddress_bin = ("{0:0>%s}" % self.addressWidth).format(bin(ReadAddress & int("1" * self.addressWidth, 2))[2:])
