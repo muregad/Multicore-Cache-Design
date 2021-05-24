@@ -2,8 +2,9 @@ import numpy as np
 from numpy import argmax
 from keras.utils import to_categorical
 from keras.models import Sequential
-from keras.layers import Dense
-
+from keras.layers import Dense, Dropout
+from keras import optimizers
+from sklearn.neural_network import MLPClassifier
 
 # define example
 class Neuralnet:
@@ -34,19 +35,29 @@ class Neuralnet:
 
         y_train = np.asarray(encoded).astype(np.float32)
         print(y_train)
+        print(y_train[0])
 
         self.model = Sequential()
-        self.model.add(Dense(90, activation='relu', input_dim=X_train.shape[1]))
-        self.model.add(Dense(200, activation='relu'))
+        self.model.add(Dense(100, activation='relu', input_dim=X_train.shape[1]))
+        self.model.add(Dropout(0.1))
+        self.model.add(Dense(150, activation='relu'))
+        self.model.add(Dropout(0.1))
         self.model.add(Dense(90, activation='relu'))
-        self.model.add(Dense(y_train.shape[1], activation="softmax"))
-
-        self.model.compile(loss="binary_crossentropy", optimizer="adam", metrics="accuracy")
+        self.model.add(Dropout(0.1))
+        self.model.add(Dense(y_train.shape[1], activation="sigmoid"))
+        optimizer = optimizers.Adam(lr=0.001)
+        self.model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics="accuracy")
         #
-        self.model.fit(X_train, y_train, epochs=1024, verbose=1)
+        self.model.fit(X_train, y_train, epochs=1000, validation_split=0.2, verbose=1)
+        print("here i am")
 
     def pred(self, x):
+        x = np.array(np.append(to_categorical(x[0:4], num_classes=4), [x[4], x[5]]),
+                     dtype=object).reshape(1, 18)
+        x = np.asarray(x).astype(np.float32)
+        print("x hot encoded :"+ str(x))
         y = self.model.predict(x)
+        print("y hot encoded :"+ str(y))
         y_inv = np.array([argmax(y[0][0:4]), argmax(y[0][4:8]),argmax(y[0][8:12]),argmax(y[0][12:16])]).reshape(1,4)
         for i in range(y.shape[0]-1):
             y_inv= np.append(y_inv, np.array([argmax(y[i+1][0:4]),argmax(y[i+1][4:8]),argmax(y[i+1][8:12]),argmax(y[i+1][12:16])]).reshape(1,4),axis=0)

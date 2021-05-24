@@ -2,7 +2,7 @@ from CPU import CPU
 from random import randint
 import numpy as np
 from Coverage import Coverage
-
+from Neuralnet import Neuralnet
 # I ===> 0
 # S ===> 1
 # E ===> 2
@@ -15,7 +15,7 @@ encode = {"I": 0, "S": 1, "E": 2, "M": 3}
 num_of_cores = 4
 
 cpu = CPU(num_of_cores=num_of_cores)
-t = 10000
+t = 250
 
 x = np.zeros((t, 6))
 y = np.zeros((t, 4))
@@ -44,3 +44,7 @@ for i in range(t):
 # print(cvg.uncoveredMapped)
 # print(x)
 # print(y)
+nn= Neuralnet(x, y)
+print("x original is " + str(x[20]))
+print("neural net pred: " + str(nn.pred(x[20])))
+print("real no : " + str(y[20]))
