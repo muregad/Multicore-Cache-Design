@@ -23,7 +23,7 @@ class Neuralnet:
 
         # print(encoded)
         # print(encoded.shape)
-        X_train = encoded
+        X_train = np.asarray(encoded).astype(np.float32)
         encoded = np.array(to_categorical(y_train[0], num_classes=4)).reshape(1, 16)
         # print(encoded)
         # print(encoded.shape)
@@ -32,7 +32,7 @@ class Neuralnet:
         for i in range(y_train.shape[0] - 1):
             encoded = np.append(encoded, to_categorical(y_train[i + 1], num_classes=4).reshape(1, 16), axis=0)
 
-        y_train = encoded
+        y_train = np.asarray(encoded).astype(np.float32)
         print(y_train)
 
         self.model = Sequential()
