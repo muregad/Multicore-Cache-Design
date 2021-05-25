@@ -60,6 +60,6 @@ class Coverage:
         return (1.0 - len(self.uncoveredMapped) / self.total) * 100.0
 
 # tst = Coverage()
-#
-# print(tst.uncovered)
-# print(tst.uncovered2[80])
+
+
+# print(tst.uncoveredMapping)

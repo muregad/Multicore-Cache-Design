@@ -3,6 +3,7 @@ from random import randint
 import numpy as np
 from Coverage import Coverage
 from Neuralnet import Neuralnet
+from Graph import Graph
 # I ===> 0
 # S ===> 1
 # E ===> 2
@@ -41,10 +42,23 @@ for i in range(t):
     print(y[i])
     print("------------------------------")
 
+# print(cvg.get_coverage())
 # print(cvg.uncoveredMapped)
 # print(x)
 # print(y)
 nn= Neuralnet(x, y)
-print("x original is " + str(x[20]))
-print("neural net pred: " + str(nn.pred(x[20])))
-print("real no : " + str(y[20]))
+
+graph = Graph(cvg.uncovered)
+
+for state_transition in cvg.uncovered2:
+    next_state = nn.pred(state_transition)
+    print(f"{state_transition} {next_state[0]}\n-------------------------------------")
+
+    graph.add_edge(state_transition, next_state[0], 1)
+
+print(f"Graph arr : {graph.graph_arr}")
+
+# print(str(x[20]))
+# print("x original is " + str(x[20]))
+# print("neural net pred: " + str(nn.pred(x[20])))
+# print("real no : " + str(y[20]))
