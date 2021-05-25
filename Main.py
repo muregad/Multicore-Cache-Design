@@ -46,7 +46,7 @@ for i in range(t):
 # print(cvg.uncoveredMapped)
 # print(x)
 # print(y)
-nn= Neuralnet(x, y)
+nn= Neuralnet(x, y, cvg.uncovered)
 
 graph = Graph(cvg.uncovered)
 
@@ -54,7 +54,7 @@ for state_transition in cvg.uncovered2:
     next_state = nn.pred(state_transition)
     print(f"{state_transition} {next_state[0]}\n-------------------------------------")
 
-    graph.add_edge(state_transition, next_state[0], 1)
+    graph.add_edge(state_transition, next_state, 1)
 
 print(f"Graph arr : {graph.graph_arr}")
 

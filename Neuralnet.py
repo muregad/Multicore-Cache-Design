@@ -8,13 +8,14 @@ from tensorflow.keras import optimizers
 
 # define example
 class Neuralnet:
-    def __init__(self, X_train, y_train):
+    def __init__(self, X_train, y_train, valid_states):
         # X_train = [[1, 3, 2, 0, 3, 2], [2, 1, 3, 0, 3, 2], [1, 1, 3, 0, 5, 1], [2, 1, 3, 0, 3, 2]]
         # X_train = np.array(X_train)
         # y_train = [[1, 3, 2, 0], [0, 1, 2, 3], [1, 3, 2, 0]]
         # y_train = np.array(y_train)
         # print(y_train)
         # one hot encode
+        self.valid_states = valid_states
         encoded = np.array(np.append(to_categorical(X_train[0][0:4], num_classes=4), [X_train[0][4], X_train[0][5]]),
                            dtype=object).reshape(1, 18)
 
@@ -49,7 +50,7 @@ class Neuralnet:
         self.model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
         #
         self.model.fit(X_train, y_train, epochs=1000, validation_split=0.2, verbose=1)
-        print("here i am")
+        print("Finished fitting the model")
 
     def pred(self, x):
         x = np.array(np.append(to_categorical(x[0:4], num_classes=4), [x[4], x[5]]),
@@ -58,10 +59,20 @@ class Neuralnet:
         # print("x hot encoded :"+ str(x))
         y = self.model.predict(x)
         # print("y hot encoded :"+ str(y))
-        y_inv = np.array([argmax(y[0][0:4]), argmax(y[0][4:8]),argmax(y[0][8:12]),argmax(y[0][12:16])]).reshape(1,4)
-        for i in range(y.shape[0]-1):
-            y_inv= np.append(y_inv, np.array([argmax(y[i+1][0:4]),argmax(y[i+1][4:8]),argmax(y[i+1][8:12]),argmax(y[i+1][12:16])]).reshape(1,4),axis=0)
-        return y_inv
+        prob = np.array([])
+        for i in range (20):
+            inter_arr = self.valid_states[i]
+            # print("inter array:"+ str(inter_arr))
+            # print("y: ", y)
+            temp = y[0][inter_arr[0]] * y[0][4+inter_arr[1]] * y[0][8+inter_arr[2]] * y[0][12+inter_arr[3]]
+            prob = np.append(prob, temp)
+
+        # print("new method")
+        return self.valid_states[np.argmax(prob)]
+        # y_inv = np.array([argmax(y[0][0:4]), argmax(y[0][4:8]),argmax(y[0][8:12]),argmax(y[0][12:16])]).reshape(1,4)
+        # for i in range(y.shape[0]-1):
+        #     y_inv= np.append(y_inv, np.array([argmax(y[i+1][0:4]),argmax(y[i+1][4:8]),argmax(y[i+1][8:12]),argmax(y[i+1][12:16])]).reshape(1,4),axis=0)
+        # return y_inv
 
         # print(y_inv)
     # model.predict(X)
