@@ -1,10 +1,10 @@
 import numpy as np
 from numpy import argmax
-from keras.utils import to_categorical
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras import optimizers
-from sklearn.neural_network import MLPClassifier
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras import optimizers
+# from sklearn.neural_network import MLPClassifier
 
 # define example
 class Neuralnet:
@@ -46,7 +46,7 @@ class Neuralnet:
         self.model.add(Dropout(0.1))
         self.model.add(Dense(y_train.shape[1], activation="sigmoid"))
         optimizer = optimizers.Adam(lr=0.001)
-        self.model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics="accuracy")
+        self.model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
         #
         self.model.fit(X_train, y_train, epochs=1000, validation_split=0.2, verbose=1)
         print("here i am")
@@ -55,9 +55,9 @@ class Neuralnet:
         x = np.array(np.append(to_categorical(x[0:4], num_classes=4), [x[4], x[5]]),
                      dtype=object).reshape(1, 18)
         x = np.asarray(x).astype(np.float32)
-        print("x hot encoded :"+ str(x))
+        # print("x hot encoded :"+ str(x))
         y = self.model.predict(x)
-        print("y hot encoded :"+ str(y))
+        # print("y hot encoded :"+ str(y))
         y_inv = np.array([argmax(y[0][0:4]), argmax(y[0][4:8]),argmax(y[0][8:12]),argmax(y[0][12:16])]).reshape(1,4)
         for i in range(y.shape[0]-1):
             y_inv= np.append(y_inv, np.array([argmax(y[i+1][0:4]),argmax(y[i+1][4:8]),argmax(y[i+1][8:12]),argmax(y[i+1][12:16])]).reshape(1,4),axis=0)
