@@ -59,7 +59,11 @@ class Coverage:
     def get_coverage(self):
         return (1.0 - len(self.uncoveredMapped) / self.total) * 100.0
 
+    def unCovered(self, state):
+        return self.uncoveredMapping[self.lst_to_string(state)] in self.uncoveredMapped
+
+#
 # tst = Coverage()
-
-
-# print(tst.uncoveredMapping)
+#
+#
+# print(tst.uncoveredMapped)
