@@ -23,10 +23,11 @@ t = 250
 x = np.zeros((t, 6))
 y = np.zeros((t, 4))
 cvg = Coverage()
+cvg_arr = []
 for i in range(t):
-    rest = np.random.randint(0, 4)
+    rest = np.random.randint(0, 8)
 
-    if rest == 3:
+    if rest == 7:
         cpu.processors[0].Cache.reset()
         cpu.processors[1].Cache.reset()
         cpu.processors[2].Cache.reset()
@@ -48,7 +49,7 @@ for i in range(t):
     # else:
     print(x[i, 0:4])
     cvg.sample(x[i])
-    print(f"Iteration {i} ===> Coverage: {cvg.get_coverage()}")
+    cvg_arr.append(cvg.get_coverage())
     cpu.bus.instruction(processor=processor, r_w=r_w, address=8, value=randint(0, 15))
     cpu.printStatus()
     y[i] = [encode[cpu.processors[0].Cache.getState(address=8)], encode[cpu.processors[1].Cache.getState(address=8)],
@@ -104,8 +105,46 @@ for i in range(200):
                 state_transition[4], state_transition[5]])
     cpu.bus.instruction(processor=state_transition[4], r_w=state_transition[5], address=8, value=15)
     graph.update_edge_weights(cvg)
-    print(cvg.get_coverage())
+    cvg_arr.append(cvg.get_coverage())
 
+random_cvg = []
+cvg_random = Coverage()
+cpu_random = CPU(num_of_cores=4)
+
+for i in range(10000):
+    # print(i)
+    if(cvg_random.get_coverage() == 100):
+        break
+    rest = np.random.randint(0, 8)
+
+    if rest == 7:
+        cpu_random.processors[0].Cache.reset()
+        cpu_random.processors[1].Cache.reset()
+        cpu_random.processors[2].Cache.reset()
+        cpu_random.processors[3].Cache.reset()
+    tmp = [0]*6
+    tmp[0:4] = [encode[cpu_random.processors[0].Cache.getState(address=8)],
+                 encode[cpu_random.processors[1].Cache.getState(address=8)],
+                 encode[cpu_random.processors[2].Cache.getState(address=8)],
+                 encode[cpu_random.processors[3].Cache.getState(address=8)]]
+    processor = np.random.randint(0, 4)
+    r_w = np.random.randint(0, 2)
+    tmp[4] = processor
+    tmp[5] = r_w
+    # if(r_w == 2):
+    #     cpu.processors[0].Cache.reset()
+    #     cpu.processors[1].Cache.reset()
+    #     cpu.processors[2].Cache.reset()
+    #     cpu.processors[3].Cache.reset()
+    # else:
+    cvg_random.sample(tmp)
+    random_cvg.append(cvg_random.get_coverage())
+    cpu_random.bus.instruction(processor=processor, r_w=r_w, address=8, value=randint(0, 15))
+
+
+
+plt.plot(range(1, len(random_cvg)+1), random_cvg, range(1, len(cvg_arr)+1), cvg_arr)
+plt.show()
 
 # print(str(x[20]))
 # print("x original is " + str(x[20]))
