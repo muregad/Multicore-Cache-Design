@@ -8,7 +8,6 @@ module CPU (input bit clk, input bit [1:0] proc_ID, input bit rd_wr, input bit[3
 	logic [1:0] proc_IDOut0, proc_IDOut1, proc_IDOut2, proc_IDOut3;
 	logic [31:0] outValue[3:0]; 
 	logic [31:0] inValue;
-	logic [31:0] address;
 	logic readyToRead;
 	logic [1:0] proc_ID_out_bus;
 	logic sharedOutBus;
