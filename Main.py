@@ -5,11 +5,43 @@ from Coverage import Coverage
 from Neuralnet import Neuralnet
 from Graph import Graph
 import matplotlib.pyplot as plt
+import os
+import csv
+
 
 # I ===> 0
 # S ===> 1
 # E ===> 2
 # M ===> 3
+
+# def read_x_y():
+#     x_train = np.zeros((t, 6))
+#     y_train = np.zeros((t, 4))
+#
+#     with open("x.csv", "r") as f:
+#         data = csv.reader(f)
+#         i = 0
+#         for row in data:
+#             x_train[i] = row
+#             i += 1
+#
+#     with open("y.csv", "r") as f:
+#         data = csv.reader(f)
+#         i = 0
+#         for row in data:
+#             y_train[i] = row
+#             i += 1
+#
+#     return x_train, y_train
+#
+# def read_covered():
+#
+#     with open("y.csv", "r") as f:
+#         data = csv.reader(f)
+#         i = 0
+#         for row in data:
+#             y_train[i] = row
+#             i += 1
 
 
 
@@ -22,6 +54,7 @@ t = 250
 
 x = np.zeros((t, 6))
 y = np.zeros((t, 4))
+
 cvg = Coverage()
 cvg_arr = []
 for i in range(t):
@@ -61,6 +94,7 @@ for i in range(t):
 # print(cvg.uncoveredMapped)
 # print(x)
 # print(y)
+os.system("python Main.py")
 nn = Neuralnet(x, y, cvg.uncovered)
 
 graph = Graph(cvg.uncovered)
@@ -86,7 +120,8 @@ for i in range(200):
         break
     state_transition = cvg.uncovered2[cvg.uncoveredMapped[np.random.randint(0, len(cvg.uncoveredMapped))]]
     transactions = graph.shortest_path(state_transition[0:4])
-    print(f"destination: {state_transition} Source: {[cpu.processors[0].Cache.getState(8), cpu.processors[1].Cache.getState(8), cpu.processors[2].Cache.getState(8), cpu.processors[3].Cache.getState(8)]} Transaction: {transactions}")
+    print(
+        f"destination: {state_transition} Source: {[cpu.processors[0].Cache.getState(8), cpu.processors[1].Cache.getState(8), cpu.processors[2].Cache.getState(8), cpu.processors[3].Cache.getState(8)]} Transaction: {transactions}")
     if len(transactions) == 0:
         continue
 
@@ -113,7 +148,7 @@ cpu_random = CPU(num_of_cores=4)
 
 for i in range(10000):
     # print(i)
-    if(cvg_random.get_coverage() == 100):
+    if (cvg_random.get_coverage() == 100):
         break
     rest = np.random.randint(0, 8)
 
@@ -122,11 +157,11 @@ for i in range(10000):
         cpu_random.processors[1].Cache.reset()
         cpu_random.processors[2].Cache.reset()
         cpu_random.processors[3].Cache.reset()
-    tmp = [0]*6
+    tmp = [0] * 6
     tmp[0:4] = [encode[cpu_random.processors[0].Cache.getState(address=8)],
-                 encode[cpu_random.processors[1].Cache.getState(address=8)],
-                 encode[cpu_random.processors[2].Cache.getState(address=8)],
-                 encode[cpu_random.processors[3].Cache.getState(address=8)]]
+                encode[cpu_random.processors[1].Cache.getState(address=8)],
+                encode[cpu_random.processors[2].Cache.getState(address=8)],
+                encode[cpu_random.processors[3].Cache.getState(address=8)]]
     processor = np.random.randint(0, 4)
     r_w = np.random.randint(0, 2)
     tmp[4] = processor
@@ -141,9 +176,7 @@ for i in range(10000):
     random_cvg.append(cvg_random.get_coverage())
     cpu_random.bus.instruction(processor=processor, r_w=r_w, address=8, value=randint(0, 15))
 
-
-
-plt.plot(range(1, len(random_cvg)+1), random_cvg, range(1, len(cvg_arr)+1), cvg_arr)
+plt.plot(range(1, len(random_cvg) + 1), random_cvg, range(1, len(cvg_arr) + 1), cvg_arr)
 plt.show()
 
 # print(str(x[20]))
