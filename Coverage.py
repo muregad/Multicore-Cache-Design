@@ -63,7 +63,7 @@ class Coverage:
         return self.uncoveredMapping[self.lst_to_string(state)] in self.uncoveredMapped
 
 #
-# tst = Coverage()
+tst = Coverage()
 #
 #
-# print(tst.uncoveredMapped)
+print(tst.uncovered2)
